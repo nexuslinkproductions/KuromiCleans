@@ -40,14 +40,19 @@ Double-click KuromiCleans. That is all.
 
 ## Custom icon
 
-Drop your own 1024x1024 PNG at Assets/AppIcon.png, then rebuild:
+Drop a 1024x1024 PNG at Assets/AppIcon-source.png (any background), strip the
+background and scale the character up, then rebuild:
 
 ```sh
+swift Scripts/icon_clean.swift Assets/AppIcon-source.png Assets/AppIcon.png 1.075
 bash Scripts/build_app.sh
 bash Scripts/make_dmg.sh
 ```
 
-If Assets/AppIcon.png is missing, a pink placeholder icon is generated automatically.
+The tool flood-fills the background away from the image borders, so the
+character's own dark pixels stay intact, then scales her up by the given
+factor (1.075 = 7.5% bigger) centered in the frame. If Assets/AppIcon.png is
+missing entirely, a pink placeholder icon is generated automatically.
 
 ## Build from source
 
