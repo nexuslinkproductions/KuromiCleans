@@ -54,7 +54,7 @@ If Assets/AppIcon.png is missing, a pink placeholder icon is generated automatic
 Requirements: a Mac with the Swift command line tools (swift, sips, iconutil, codesign, hdiutil). No third party dependencies, no network access needed.
 
 ```sh
-bash Scripts/run_tests.sh  # run the verification harness
+bash Scripts/mechanism_test.sh  # deterministic mechanism test on a staged folder
 bash Scripts/build_app.sh  # build dist/KuromiCleans.app (universal when possible)
 bash Scripts/make_dmg.sh   # package dist/KuromiCleans.dmg
 bash Scripts/smoke.sh      # dry-run preview against your real Downloads, moves nothing
@@ -64,5 +64,17 @@ Developer flags for the app binary:
 
 ```sh
 dist/KuromiCleans.app/Contents/MacOS/KuromiCleans --dry-run --path /some/folder
+dist/KuromiCleans.app/Contents/MacOS/KuromiCleans --dump --no-alert --path /some/folder
+dist/KuromiCleans.app/Contents/MacOS/KuromiCleans --check --path /some/folder
 dist/KuromiCleans.app/Contents/MacOS/KuromiCleans --version
 ```
+
+Verification works through the binary's own diagnostics. `--dump` emits a JSON
+report of any run: per-category counts, every moved file with its destination,
+skip reasons (dotfile, directory, symlink), collision renames, errors, bytes
+moved, elapsed time. `--check` validates a folder's state with health codes
+(`HEALTH OK` / `HEALTH FAIL`) for loose files at the root and category mismatches,
+and exits nonzero when anything is off. `Scripts/mechanism_test.sh` drives both
+against a deterministic staged folder and asserts the diagnostic output. For
+live evidence on the real Downloads folder, run the binary with
+`--dump --no-alert`, then `--check`.
