@@ -1,0 +1,68 @@
+# KuromiCleans
+
+Tidy up in one click. KuromiCleans sorts everything in your Downloads folder into neat category subfolders, shows a friendly alert, and gets out of your way.
+
+## What it does
+
+Double-click the app. It looks at the files directly inside ~/Downloads, moves each one into its matching category subfolder, shows "Downloads sorted. Moved N files.", and quits. No windows, no menu bar, nothing left running.
+
+Things it leaves alone:
+
+- Dotfiles like .DS_Store
+- Folders and everything inside them
+- Files that already live inside category subfolders
+- Symlinks
+
+Matching is case-insensitive, so PHOTO.JPG lands in Images too. When two files share a name, the second one becomes "report 2.pdf", then "report 3.pdf".
+
+## Install
+
+1. Open the KuromiCleans.dmg file.
+2. Drag KuromiCleans.app into Applications.
+3. First launch: right-click KuromiCleans in Applications, choose Open, then click Open. The app is not notarized, so this is expected the first time.
+
+## Usage
+
+Double-click KuromiCleans. That is all.
+
+## Categories
+
+| Category | Extensions |
+|---|---|
+| Images | jpg, jpeg, png, gif, heic, heif, webp, svg, tiff, tif, bmp, raw, cr2, nef, psd, ai, eps |
+| Documents | pdf, doc, docx, txt, md, rtf, odt, xls, xlsx, ppt, pptx, csv, pages, numbers, key, epub, mobi |
+| Video | mp4, mov, mkv, avi, webm, m4v, wmv, flv, ts |
+| Audio | mp3, wav, aac, flac, m4a, ogg, aiff, wma, opus |
+| Archives | zip, rar, 7z, tar, gz, bz2, xz, dmg, pkg, iso, cab |
+| Applications | app |
+| Code | swift, py, js, ts, jsx, tsx, html, css, json, yaml, yml, xml, sh, bash, rb, go, rs, java, c, cpp, h, hpp, ipynb, sql, toml |
+| Other | everything else, and files with no extension |
+
+## Custom icon
+
+Drop your own 1024x1024 PNG at Assets/AppIcon.png, then rebuild:
+
+```sh
+bash Scripts/build_app.sh
+bash Scripts/make_dmg.sh
+```
+
+If Assets/AppIcon.png is missing, a pink placeholder icon is generated automatically.
+
+## Build from source
+
+Requirements: a Mac with the Swift command line tools (swift, sips, iconutil, codesign, hdiutil). No third party dependencies, no network access needed.
+
+```sh
+bash Scripts/run_tests.sh  # run the verification harness
+bash Scripts/build_app.sh  # build dist/KuromiCleans.app (universal when possible)
+bash Scripts/make_dmg.sh   # package dist/KuromiCleans.dmg
+bash Scripts/smoke.sh      # dry-run preview against your real Downloads, moves nothing
+```
+
+Developer flags for the app binary:
+
+```sh
+dist/KuromiCleans.app/Contents/MacOS/KuromiCleans --dry-run --path /some/folder
+dist/KuromiCleans.app/Contents/MacOS/KuromiCleans --version
+```
